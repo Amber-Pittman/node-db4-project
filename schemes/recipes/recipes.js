@@ -1,9 +1,14 @@
 const express = require("express")
 const db = require("../../data/config")
+const recipes = require("./recipes-model")
 
 const router = express.Router()
 
+
+// STRETCH Attempts
+
 router.get("/", async (req, res, next) => {
+    recipes.getRecipes()
     try {
         res.json(await db("recipes"))
     } catch(err) {
@@ -11,16 +16,17 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-router.get("/:id", async (req, res, next) => {
-    try {
-        const list = await db.getShoppingList(req.params.id)
-        res.json(list)
-    } catch(err) {
+router.get("/:id/shoppingList", (req, res, next) => {
+    recipes.getShoppingList(req.params.id)
+    .then (shoppingList => {
+        res.json(shoppingList)
+    })
+    .catch(err => {
         next(err)
-    }
+    })
 })
 
-router.get("/instructions/:id", async (req, res, next) => {
+router.get("/:id/instructions", async (req, res, next) => {
     try {
         const instructions = await db.getInstructions(req.params.id)
         res.json(instructions)

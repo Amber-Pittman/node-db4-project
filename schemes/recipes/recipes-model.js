@@ -4,18 +4,27 @@ function getRecipes() {
     return db("recipes")
 }
 
-function getShoppingList(id) {
-    return db("ingredients as i")
-    .join("recipes as r", "r.id", "i.id")
-    .select(["i.ingredient_qty", "i.ingredient_name"])
-    .where("i.id", id)
+function getShoppingList(recipe_id) {
+    return db("recipes as r")
+    .leftJoin("ingredient_qty as q", "r.id", "q.recipe_id")
+    .leftJoin("ingredients as i", "q.ingredient_id", "i.id")
+    .select(
+        "r.recipe_name as recipe_name", 
+        "i.name as ingredients",
+        "q.quantity as quantity"
+    )
+    .where("r.id", recipe_id)
 }
 
 function getInstructions(recipe_id) {
     return db("recipes as r")
-        .select(["i.step_number", "i.step"])
-        .leftJoin("recipe_instructions as ri", "r.id", "ri.recipe_id")
-        .leftJoin("instructions as i", "i.id", "ri.instruction_id")
+        .select(
+            "r.recipe_name as recipe_name",
+            "instructions.step",
+            "instructions"
+        )
+        .leftJoin("instructions", "r.id", "instructions.recipe_id")
+        .where("r.id", recipe_id)
 }
 
 module.exports = {
