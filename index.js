@@ -1,11 +1,16 @@
 const express = require("express")
 const helmet = require("helmet")
+const recipesRouter = require("./schemes/recipes/recipes")
+const ingredientsRouter = require("./schemes/ingredients/ingredients")
 
 const server = express()
 const PORT = process.env.PORT || 5000;
 
 server.use(helmet())
 server.use(express.json())
+
+server.use("/recipes", recipesRouter)
+server.use("/ingredients", ingredientsRouter)
 
 server.use((err, req, res, next) => {
     console.log(err)
