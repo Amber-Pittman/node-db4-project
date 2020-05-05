@@ -5,8 +5,7 @@ const router = express.Router()
 
 router.get("/", async (req, res, next) => {
     try {
-        const recipes = await db.getRecipes()
-        res.json(recipes)
+        res.json(await db("recipes"))
     } catch(err) {
         next(err)
     }
